@@ -19,6 +19,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/css.css" rel="stylesheet">
 </head>
 
 <body>
@@ -60,19 +61,33 @@
         <h1>Умная теплица 2.0</h1>
         <h2>Проект "Умная теплица"</h2>
         <p>Подготовили:</p>
-        <p><a href="https://vk.com/anst.foto">Старинин Андрей</a>- преподаватель клуба робототехники "Роботрек" г. Воронеж.</p>
-        <img src="https://pp.userapi.com/c982/u3707569/a_e091c8ce.jpg"  width="30">
-        <p>Жуков Павел- создатель теплицы, ученик МБОУ "Лицей №8".</p>
-        <img src="https://sun9-1.userapi.com/c831408/v831408913/aa073/3vkqGTxGdrk.jpg"  width="30">
-        <p><a href="https://vk.com/k.khokhlov1">Хохлов Кирилл</a>- создатель сайта для удалённого управления теплицей, ученик МБОУ "Лицей №1".</p>
-        <img src="https://pp.userapi.com/c845524/v845524913/66bf/hhZxy80AjN8.jpg"  height="40">
+        <div class="row">
+            <div class="col">
+                <p><a href="https://vk.com/id213881913">Жуков Павел</a>- один из создателей теплицы, ученик МБОУ "Лицей №8".</p>
+                <img src="https://sun9-1.userapi.com/c831408/v831408913/aa073/3vkqGTxGdrk.jpg" class="rounded float-left" width="100">
+            </div>
+            <div class="col">
+                <p><a href="https://vk.com/k.khokhlov1">Хохлов Кирилл</a>- создатель сайта для удалённого управления теплицей, ученик МБОУ "Лицей №1".</p>
+                <img src="https://pp.userapi.com/c845524/v845524913/66bf/hhZxy80AjN8.jpg" class="rounded float-right" width="100">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <p><a href="https://vk.com/anst.foto">Старинин Андрей</a>- один из создателей теплицы и преподаватель клуба робототехники "Роботрек" г. Воронеж.</p>
+                <img src="https://pp.userapi.com/c982/u3707569/a_e091c8ce.jpg" class="rounded float-left"  width="100">
+            </div>
+            <div class="col">
+                <p>Лунь Андрей- один из создателей теплицы и преподаватель клуба робототехники "Роботрек" г. Воронеж.</p>
+            </div>
+        </div>
         <br>
         <h3>Цель проекта</h3>
         <p>Создание теплицы, которой можно управлять удалённо.</p>
         <br>
-        <h3>Как создавалась теплица?</h3>
+        <h3>Кадры с места событий</h3>
         <img src="https://sun9-9.userapi.com/c840426/v840426913/67b6b/btw25sJWfqk.jpg" height="200">
         <img src="https://sun9-6.userapi.com/c824504/v824504913/eff23/TCvIelQIsjk.jpg" height="200">
         <p></p>
     </div>
+
 
