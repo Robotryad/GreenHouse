@@ -6,52 +6,55 @@
 #include <iarduino_RTC.h>
 #include <SPI.h>
 #include <Ethernet.h>
-
 #define oneWireBus 2
-
-#define PINTERMPOWER 5 // номер пина для включения датчика температуры
-#define PINLIGHTPOWER 12 //номер пина для включения освещения
-
+#define term_power 5
+#define svet 12
+#define obogrev 11
+#define poliv 9
 const int LIGHT = 300; //значение света для включения освещения
 const int MOISTURE = 300; //значение влажности почвы для включения полива
 const int HUMIDITY = 300; //значение влажности воздуха для включения
 const int TEMPERATURE = 300; //значение температуры воздуха для включения подогрева воздуха
-
 unsigned long int timeConn = millis();
-
 char server[] = "site.ru";
 int hour;
 int minute;
 int second;
+int hourStartP;                                
+int minuteStartP;
+int secondStartP;
+int hourFinalP;
+int minuteFinalP;
+int secondFinalP;
 int light; //значение яркости света
 int moisture; //значение влажности почвы
 float humidity; //значение влажности воздуха
 int temperature; //значение температуры воздуха
 int temp_soil; //значение температуры почвы
 int Clock; //дата и время
-
+bool PolivAuto = true;
 DHT dht(8, DHT22); //датчик влажности и температуры воздуха к 8 пину
-
-// Инициализация Ethernet-шилда
+	long interval = 180000; 
+	long previousMillis = 0;
+	unsigned long currentMillis;
 byte mac[] = { 
-  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; // Мак адрес 
+  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; // Мак адрес
+ 
 EthernetClient client;
 
-// Инициализация датчика температуры DS18B20
 OneWire oneWire(oneWireBus);
 DallasTemperature sensors(&oneWire);
 
-// Инициализация часов RTC
 iarduino_RTC time(RTC_DS3231);
 
 int TempSoil() {
   //ds18b20
-  digitalWrite(PINTERMPOWER, HIGH);
+  digitalWrite(term_power, HIGH);
   sensors.requestTemperatures();
   delay(500);
   sensors.requestTemperatures();
   int temp = round(float(sensors.getTempCByIndex(0)));
-  digitalWrite(PINTERMPOWER, LOW);
+  digitalWrite(term_power, LOW);
 
   return temp;
 }
@@ -86,26 +89,26 @@ void FileSD(float humidity_, int temperature_, int light_, int moisture_, int te
 
 void MoistureDelay() {
   if (moisture > MOISTURE) {
-    digitalWrite(13, HIGH);
+    digitalWrite(poliv, HIGH);
   } else {
-    digitalWrite(13, LOW);
+    digitalWrite(poliv, LOW);
   }
 }
 
 void TempSoilDelay() {
 if (temp_soil > TEMP_SOIL) {
-    digitalWrite(13, HIGH);
+    digitalWrite(obogrev, HIGH);
   } else {
-    digitalWrite(13, LOW);
+    digitalWrite(obogrev, LOW);
   }
 }
 
 void LightDelay() {
 if (light > 300) {
-    digitalWrite(PINLIGHTPOWER, HIGH);
+    digitalWrite(svet, HIGH);
     Serial.println("svet");
   } else {
-    digitalWrite(PINLIGHTPOWER, LOW);
+    digitalWrite(svet, LOW);
   }
 }
 
@@ -123,6 +126,24 @@ if (temperature > TEMPERATURE) {
   } else {
     digitalWrite(13, LOW);
   }
+}
+void Poliv() {
+if(hour == hourStartP) { 
+  if(minute == minuteStartP) {
+	  if(second == secondStartP) {
+		  digitalWrite(poliv,HIGH);
+  }
+ }	
+}
+void PolivEnd() {
+  if(hour == hourStartF) { 
+  if(minute == minuteStartF) {
+	  if(second == secondStartF) {
+		  digitalWrite(poliv,LOW);
+		   }
+	  }
+  }
+ }	
 }
 void sendData(float temperature, float humidity, int temp_soil, int moisture, int light, int hour, int minute, int second) {
   client.connect(server, 80);
@@ -165,10 +186,11 @@ void setup() {
   dht.begin();
 
   sensors.begin();
-
-  pinMode(PINLIGHTPOWER, OUTPUT);
+  pinMode(poliv,OUTPUT);
+  pinMode(obogrev, OUTPUT);
+  pinMode(svet, OUTPUT);
   SD.begin(4);
-  pinMode(PINTERMPOWER, OUTPUT);
+  pinMode(term_power, OUTPUT);
   time.begin();
   time.settime(0, 44, 9, 19, 11, 17, 0); //   сек,  мин,  час, день месяца, месяц,  год, день недели
   Serial.begin(9600);
@@ -185,6 +207,14 @@ void loop() {
   moisture = analogRead(A1);
   humidity = ReadHumidity();
   temperature = ReadTemperature();
+  currentMillis = millis();
+  if(PolivAuto == false) { 
+  Poliv();
+  PolivEnd();
+  }
+  else {
+	  MoistureDelay();
+  }
   //char Clock = time.gettime("d.m.Y H:i:s");
   if (millis() - timeConn > 2000) {
     sendData(temperature,humidity,temp_soil,moisture,light,hour,minute,second);
