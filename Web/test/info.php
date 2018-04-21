@@ -68,7 +68,7 @@
             </div>
             <div class="col">
                 <p><a href="https://vk.com/k.khokhlov1">Хохлов Кирилл</a>- создатель сайта для удалённого управления теплицей, ученик МБОУ "Лицей №1".</p>
-                <img src="https://pp.userapi.com/c845524/v845524913/66bf/hhZxy80AjN8.jpg" class="rounded float-right" width="100">
+                <img src="https://pp.userapi.com/c845524/v845524913/66bf/hhZxy80AjN8.jpg" class="rounded float-left" width="100">
             </div>
         </div>
         <div class="row">
@@ -85,8 +85,15 @@
         <p>Создание теплицы, которой можно управлять удалённо.</p>
         <br>
         <h3>Кадры с места событий</h3>
+	  <div class="col">
+	  <div class="row">
+        <img src="https://pp.userapi.com/c844520/v844520913/5c1a/ceX7iI76NTQ.jpg" height="200">
         <img src="https://sun9-9.userapi.com/c840426/v840426913/67b6b/btw25sJWfqk.jpg" height="200">
+	   </div>
         <img src="https://sun9-6.userapi.com/c824504/v824504913/eff23/TCvIelQIsjk.jpg" height="200">
+        <img src="https://pp.userapi.com/c834100/v834100913/ef64a/UPnuA8dh2gs.jpg" height="200">
+		<img src="https://pp.userapi.com/c831209/v831209913/af2ad/9xA68CXxG7k.jpg" height="200">
+        <img src="https://pp.userapi.com/c847120/v847120913/15e9/r6P9PIxfUhQ.jpg" height="200">
         <p></p>
     </div>
 
