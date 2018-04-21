@@ -1,3 +1,4 @@
+// Подключаемые библиотеки
 #include <OneWire.h>
 #include <DHT.h>
 #include <Wire.h>
@@ -6,46 +7,50 @@
 #include <iarduino_RTC.h>
 #include <SPI.h>
 #include <Ethernet.h>
+
+// Пины
 #define oneWireBus 2
 #define term_power 5
 #define svet 12
 #define obogrev 11
 #define poliv 9
+
+// Константы
 const int LIGHT = 300; //значение света для включения освещения
 const int MOISTURE = 300; //значение влажности почвы для включения полива
 const int HUMIDITY = 300; //значение влажности воздуха для включения
 const int TEMPERATURE = 300; //значение температуры воздуха для включения подогрева воздуха
+
+// Переменные
 unsigned long int timeConn = millis();
-char server[] = "site.ru";
-int hour;
-int minute;
-int second;
-int hourStartP;                                
-int minuteStartP;
-int secondStartP;
-int hourFinalP;
-int minuteFinalP;
-int secondFinalP;
-int hourStartS;                                
-int minuteStartS;
-int secondStartS;
-int hourFinalS;
-int minuteFinalS;
-int secondFinalS;
+
+char server[] = "site.ru"; // Адрес сайта, куда отправляются данные
+
+int hour, minute, second; // Переменные времени
+
+// Время старта и остановки полива
+int hourStartP, minuteStartP, secondStartP;
+int hourFinalP, minuteFinalP, secondFinalP;
+
+// Время старта и остановки освещения
+int hourStartS, minuteStartS, secondStartS;
+int hourFinalS, minuteFinalS, secondFinalS;
+
 int light; //значение яркости света
 int moisture; //значение влажности почвы
 float humidity; //значение влажности воздуха
 int temperature; //значение температуры воздуха
 int temp_soil; //значение температуры почвы
-int Clock; //дата и время
-bool PolivAuto = 1;
-bool SvetAuto = 1;
+
+bool PolivAuto = 1; // Признак/флаг автоматического полива 
+bool SvetAuto = 1; // Признак/флаг автоматического освещения 
+
 DHT dht(8, DHT22); //датчик влажности и температуры воздуха к 8 пину
-	long interval = 180000; 
-	long previousMillis = 0;
-	unsigned long currentMillis;
+
+unsigned long currentMillis;
+
 byte mac[] = { 
-  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; // Мак адрес
+  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; // MAC-адрес
  
 EthernetClient client;
 
@@ -54,6 +59,7 @@ DallasTemperature sensors(&oneWire);
 
 iarduino_RTC time(RTC_DS3231);
 
+// Температура почвы
 int TempSoil() {
   //ds18b20
   digitalWrite(term_power, HIGH);
@@ -66,18 +72,20 @@ int TempSoil() {
   return temp;
 }
 
-
+// Температура воздуха
 int ReadTemperature() {
   float t = dht.readTemperature();
   int temp = round(t);
   return temp;
 }
 
+// Влажность воздуха
 float ReadHumidity() {
   float h = dht.readHumidity();
   return h;
 }
 
+// Вывод показаний на монитор COM-порта
 void OutputSerial(){
   Serial.print("Humidity ");  Serial.println(humidity);
   Serial.print("Temperature ");  Serial.println(temperature);
@@ -86,6 +94,7 @@ void OutputSerial(){
   Serial.print("Svet ");    Serial.println(light);
   }
 
+// Запись данных в SD-карты
 void FileSD(float humidity_, int temperature_, int light_, int moisture_, int temp_soil_) {
   File dataFile = SD.open("log.txt", FILE_WRITE);
   if (dataFile) {
@@ -94,6 +103,7 @@ void FileSD(float humidity_, int temperature_, int light_, int moisture_, int te
   }
 }
 
+// Полив
 void MoistureDelay() {
   if (moisture > MOISTURE) {
     digitalWrite(poliv, HIGH);
@@ -102,6 +112,7 @@ void MoistureDelay() {
   }
 }
 
+// Обогрев почвы
 void TempSoilDelay() {
 if (temp_soil < 30) {
     digitalWrite(obogrev, HIGH);
@@ -110,6 +121,7 @@ if (temp_soil < 30) {
   }
 }
 
+// Освещение
 void LightDelay() {
 if (light > 300) {
     digitalWrite(svet, HIGH);
@@ -118,6 +130,7 @@ if (light > 300) {
   }
 }
 
+// Влажность воздуха
 void HumidityDelay() {
 if (humidity > 38) {
     digitalWrite(13, HIGH);
@@ -126,6 +139,7 @@ if (humidity > 38) {
   }
 }
 
+// Обогрев воздуха
 void TemperatureDelay() {
 if (temperature > 42) {
     digitalWrite(13, HIGH);
@@ -133,6 +147,8 @@ if (temperature > 42) {
     digitalWrite(13, LOW);
   }
 }
+
+// Полив
 void Poliv() {
 if(hour == hourStartP) { 
   if(minute == minuteStartP) {
@@ -150,7 +166,9 @@ void PolivEnd() {
 		   }
 	  }
   }
- }	
+ }
+ 
+// Освещение
 void Svet() {
 if(hour == hourStartS) { 
   if(minute == minuteStartS) {
@@ -168,7 +186,9 @@ void SvetEnd() {
        }
     }
   }
- }  
+ }
+ 
+// Отправка данных на Web-сервер
 void sendData(float temperature, float humidity, int temp_soil, int moisture, int light, int hour, int minute, int second) {
   client.connect(server, 80);
   client.print( "GET /add.php?");
@@ -206,6 +226,8 @@ void sendData(float temperature, float humidity, int temp_soil, int moisture, in
   client.stop();
   client.flush();
 }
+
+
 void setup() {
   dht.begin();
   sensors.begin();
@@ -245,7 +267,6 @@ void loop() {
   else {
     LightDelay();
   }
-  //char Clock = time.gettime("d.m.Y H:i:s");
   if (millis() - timeConn > 2000) {
     sendData(temperature,humidity,temp_soil,moisture,light,hour,minute,second);
     timeConn = millis();
