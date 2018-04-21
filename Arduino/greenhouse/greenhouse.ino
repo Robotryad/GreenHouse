@@ -32,7 +32,7 @@ float humidity; //значение влажности воздуха
 int temperature; //значение температуры воздуха
 int temp_soil; //значение температуры почвы
 int Clock; //дата и время
-bool PolivAuto = true;
+bool PolivAuto = 1;
 DHT dht(8, DHT22); //датчик влажности и температуры воздуха к 8 пину
 	long interval = 180000; 
 	long previousMillis = 0;
@@ -184,7 +184,6 @@ void sendData(float temperature, float humidity, int temp_soil, int moisture, in
 }
 void setup() {
   dht.begin();
-
   sensors.begin();
   pinMode(poliv,OUTPUT);
   pinMode(obogrev, OUTPUT);
@@ -208,7 +207,7 @@ void loop() {
   humidity = ReadHumidity();
   temperature = ReadTemperature();
   currentMillis = millis();
-  if(PolivAuto == false) { 
+  if(PolivAuto == 0) { 
   Poliv();
   PolivEnd();
   }
@@ -226,4 +225,15 @@ void loop() {
   LightDelay();
   HumidityDelay();
   TemperatureDelay();
+  
+   while (client.available())
+{
+char c = client.read();
+if ( c=='1') {
+  PolivAuto = 1;
+  }
+  if (c=='0') {
+    PolivAuto = 0;
+    }
+}
 }
