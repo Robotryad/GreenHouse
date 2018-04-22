@@ -26,13 +26,20 @@ int secondStartP;
 int hourFinalP;
 int minuteFinalP;
 int secondFinalP;
+int hourStartS;                                
+int minuteStartS;
+int secondStartS;
+int hourFinalS;
+int minuteFinalS;
+int secondFinalS;
 int light; //значение яркости света
 int moisture; //значение влажности почвы
 float humidity; //значение влажности воздуха
 int temperature; //значение температуры воздуха
 int temp_soil; //значение температуры почвы
 int Clock; //дата и время
-bool PolivAuto = true;
+bool PolivAuto = 1;
+bool SvetAuto = 1;
 DHT dht(8, DHT22); //датчик влажности и температуры воздуха к 8 пину
 	long interval = 180000; 
 	long previousMillis = 0;
@@ -96,7 +103,7 @@ void MoistureDelay() {
 }
 
 void TempSoilDelay() {
-if (temp_soil > TEMP_SOIL) {
+if (temp_soil < 30) {
     digitalWrite(obogrev, HIGH);
   } else {
     digitalWrite(obogrev, LOW);
@@ -106,14 +113,13 @@ if (temp_soil > TEMP_SOIL) {
 void LightDelay() {
 if (light > 300) {
     digitalWrite(svet, HIGH);
-    Serial.println("svet");
   } else {
     digitalWrite(svet, LOW);
   }
 }
 
 void HumidityDelay() {
-if (humidity > HUMIDITY) {
+if (humidity > 38) {
     digitalWrite(13, HIGH);
   } else {
     digitalWrite(13, LOW);
@@ -121,7 +127,7 @@ if (humidity > HUMIDITY) {
 }
 
 void TemperatureDelay() {
-if (temperature > TEMPERATURE) {
+if (temperature > 42) {
     digitalWrite(13, HIGH);
   } else {
     digitalWrite(13, LOW);
@@ -135,16 +141,34 @@ if(hour == hourStartP) {
   }
  }	
 }
+}
 void PolivEnd() {
-  if(hour == hourStartF) { 
-  if(minute == minuteStartF) {
-	  if(second == secondStartF) {
+  if(hour == hourFinalP) { 
+  if(minute == minuteFinalP) {
+	  if(second == secondFinalP) {
 		  digitalWrite(poliv,LOW);
 		   }
 	  }
   }
  }	
+void Svet() {
+if(hour == hourStartS) { 
+  if(minute == minuteStartS) {
+    if(second == secondStartS) {
+      digitalWrite(svet,HIGH);
+  }
+ }  
 }
+}
+void SvetEnd() {
+  if(hour == hourFinalS) { 
+  if(minute == minuteFinalS) {
+    if(second == secondFinalS) {
+      digitalWrite(svet,LOW);
+       }
+    }
+  }
+ }  
 void sendData(float temperature, float humidity, int temp_soil, int moisture, int light, int hour, int minute, int second) {
   client.connect(server, 80);
   client.print( "GET /add.php?");
@@ -184,7 +208,6 @@ void sendData(float temperature, float humidity, int temp_soil, int moisture, in
 }
 void setup() {
   dht.begin();
-
   sensors.begin();
   pinMode(poliv,OUTPUT);
   pinMode(obogrev, OUTPUT);
@@ -208,12 +231,19 @@ void loop() {
   humidity = ReadHumidity();
   temperature = ReadTemperature();
   currentMillis = millis();
-  if(PolivAuto == false) { 
+  if(PolivAuto == 0) { 
   Poliv();
   PolivEnd();
   }
   else {
 	  MoistureDelay();
+  }
+  if(SvetAuto == 0) { 
+  Svet();
+  SvetEnd();
+  }
+  else {
+    LightDelay();
   }
   //char Clock = time.gettime("d.m.Y H:i:s");
   if (millis() - timeConn > 2000) {
@@ -226,4 +256,22 @@ void loop() {
   LightDelay();
   HumidityDelay();
   TemperatureDelay();
+  
+   while (client.available())
+{
+char c = client.read();
+char d = client.read();
+if ( c=='1') {
+  PolivAuto = 1;
+  }
+if (c=='0') {
+    PolivAuto = 0;
+    }
+if (d=='1') {
+  SvetAuto = 1;
+  }
+  if (d=='0') {
+  SvetAuto = 0;
+  }
+}
 }
