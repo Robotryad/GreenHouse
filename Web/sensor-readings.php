@@ -32,7 +32,7 @@
 <body>
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="#">Умная Теплица</a>
+ <img src="https://trello-attachments.s3.amazonaws.com/5aa4f00a0eea2bb6d7d3aff3/5b30f66a2ff726567c4b012f/cc838be196c04bd195a395641406cecf/Logo-SmartGreenHouse.png" width="100">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -56,7 +56,7 @@
                 <a class="nav-link" href="#">Справочник</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="info.php">О теплице</a>
+                <a class="nav-link" href="Info.html">О теплице</a>
             </li>
         </ul>
     </div>
@@ -83,6 +83,7 @@
                 <li>Влажность почвы</li>
                 <li>Температура почвы</li>
                 <li>Освещённость</li>
+				<li>Уровень воды</li>
             </ul>
         </div>
         <!--
@@ -94,6 +95,7 @@
                 <li><?=$moisture?></li>
                 <li><?=$temperature_soil?></li>
                 <li><?=$light?></li>
+				<li><?=$water_level?></li>
             </ul>
         </div>
         -->
@@ -105,6 +107,7 @@
                 <li>Не поступили данные</li>
                 <li>Не поступили данные</li>
                 <li>Не поступили данные</li>
+				<li>Не поступили данные</li>
             </ul>
         </div>
     </div>
@@ -125,6 +128,7 @@
                     <th scope="col">Температура почвы</th>
                     <th scope="col">Влажность почвы</th>
                     <th scope="col">Освещение</th>
+					<th scope="col">Уровень воды</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -135,6 +139,7 @@
                     <td>7</td>
                     <td>7</td>
                     <td>7</td>
+					<td>328758345873487</td>
                 </tr>
                 </tbody>
             </table>
