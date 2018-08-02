@@ -63,7 +63,11 @@ if (isset($_GET['light'])) {
 } else {
     $light = $error_get_data;
 }
-
+if (isset($_GET['water_level'])) {
+    $light = $_GET['water_level'];
+} else {
+    $light = $error_get_data;
+}
 $date_time =$years.$months.$days.$hour.$minute.$second;
 
 ?>
